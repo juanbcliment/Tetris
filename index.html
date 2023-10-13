@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Libreria p5.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <title>Tetris</title>
+</head>
+<body>
+    <script src="Tablero.js"></script>
+    <script>
+        const MARGEN_TABLERO = 20;
+        let reguladoVelocidadTeclas = 0
+
+
+
+
+
+        /* setup es nativa de p5.js ajusta propiedades de objetos y variables*/
+        function setup() {
+            createCanvas(900,600)
+            /* no ponerle let, var, const a las siguentes variables, para que sean globales */
+            tablero = new Tablero()
+            tetrimino = new Tetrimino()
+
+            crearMapeoBaseTetrimino()
+            resizeCanvas(tablero.ancho + 2*MARGEN_TABLERO, tablero.alto + 2*MARGEN_TABLERO )
+
+        }
+       
+
+
+
+
+
+        /* draw es nativa de p5.js da instrucciones precisas de dibujo al canvas */
+        function draw() {
+            background("grey")
+            tablero.dibujar()
+            tetrimino.dibujar()
+            keyEventsTetris()
+        }
+
+          
+          /* Funcion para poder mover el tetris */
+        function keyEventsTetris() {
+            if(millis() - reguladoVelocidadTeclas < 70){
+                return
+            }
+            reguladoVelocidadTeclas = millis()
+            if(keyIsDown(RIGHT_ARROW)){
+                tetrimino.moverDerecha()
+            }
+            if(keyIsDown(LEFT_ARROW)){
+                tetrimino.moverIzquierda()
+            }
+            if(keyIsDown(DOWN_ARROW)){
+                tetrimino.moverAbajo()
+            }
+        }
+
+        function crearMapeoBaseTetrimino() {
+            tetriminosBase = {
+                "Z": {
+                    color: "red",
+                    mapa: [
+                        createVector()
+                    ]
+                }
+
+            }
+            
+        }
+
+      
+
+         /* Configurando de pieza de tetris */
+        class Tetrimino{
+           constructor(){
+            this.nombre = nombre
+            let tetriminoBase = tetriminosBase[nombre]
+            this.color = tetriminoBase.color
+            this.mapa = []
+            for ( const pmino of tetriminoBase.mapa) { 
+                this.mapa.push(pmino.copy())
+            }
+            this.posicion = createVector(0,0)
+           }
+
+          
+           moverDerecha(){
+            this.posicion.x++
+           }
+           moverIzquierda(){
+            this.posicion.x--
+           }
+           moverAbajo(){
+            this.posicion.y++
+           }
+           
+
+           dibujar(){
+            push()
+            fill("yellow")
+            let coord = tablero.coordenada(this.posicion.x, this.posicion.y)
+            rect(coord.x, coord.y, tablero.ladoCelda)
+            pop()
+           }
+        }
+    </script>
+    
+</body>
+</html>
